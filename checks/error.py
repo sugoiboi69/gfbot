@@ -23,10 +23,10 @@ class CommandErrHandler(commands.Cog):
 
         if isinstance(error, discord.ext.commands.CommandNotFound):
             await ctx.send('retard')
-        
         elif isinstance(error, commands.CheckFailure):
             await ctx.send("You don't have permission to execute this command.")
-
+        elif isinstance(error, commands.CommandOnCooldown):
+            await ctx.send(f"You're on cooldown; try again in {error.retry_after:.2f}s.")
         else:
             print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
             traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)

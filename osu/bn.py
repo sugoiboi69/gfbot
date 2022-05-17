@@ -81,7 +81,7 @@ class BN_Check(commands.Cog, name='osu! BN Information.'):
         await ctx.send(embed=embed)        
 
 
-    @tasks.loop(seconds=10, count=None)
+    @tasks.loop(seconds=60, count=None)
     async def announce_changes(self): #announces in every server which enables this function, if there are status changes for any BNs.
         changes = await BN_Check.bn_compare()
         if changes == []:

@@ -1,14 +1,17 @@
-from clients.bot import CustomBotClient
+from clients.bot import Bot
 from clients.bot_vars import bot_vars
+from economy.economy import Economy
 from responses.greetings import Greetings
+
 from checks.error import CommandErrHandler
 #from checks.logger import Logger
 from checks.db_checker import DBCheck
+
 from osu.bn import BN_Check
 from osu.profiles import Profiles
+
 import sqlol.disql as sq
 import discord
-
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -27,7 +30,7 @@ def main():
     intents = discord.Intents.default()
     intents.members = True
 
-    bot = CustomBotClient(
+    bot = Bot(
         command_prefix=';',
         intents=intents,
     )
@@ -42,6 +45,7 @@ def main():
     bot.add_cog(BN_Check(bot))
     bot.add_cog(Profiles(bot))
     bot.add_cog(DBCheck(bot))
+    bot.add_cog(Economy(bot))
 
     bot.run(token)
 

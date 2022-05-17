@@ -1,0 +1,7 @@
+{
+  "bot_admins": [
+    ""
+  ],
+  "daily_amount": 1000,
+  "daily_cooldown_hours": 24
+}

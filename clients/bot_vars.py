@@ -9,6 +9,14 @@ class bot_vars():
     most of it pertains to db configs and stuff
     """
 
+    #default bot config file
+    bot_config = {
+        "bot_admins": [],
+        "daily_amount": 0,
+        "daily_cooldown_hours": 0,
+
+    }
+
     #db names, connection, default server config
     main_table = "disc"
     server_table = "server"
@@ -18,13 +26,14 @@ class bot_vars():
         "bn_ping_channel": 0,
     }
 
-    #server db config
+    #default server db config
     server_cols = ["server", "server_id", "config"]
     server_cols_type = ["text", "text", "text"]
     server_default_config = json.dumps(config)
     server_default = ["", "", server_default_config]
 
-    #user db config
-    user_cols = ["user", "uid", "money"]
-    user_cols_type = ["text", "text", "integer"]
-    user_default = ['', '', 0]
+    #default user db config
+    servers = {"servers": []}
+    user_cols = ["user", "uid", "money", "servers", "last_daily"]
+    user_cols_type = ["text", "text", "integer", "text", "text"]
+    user_default = ['', '', 0, json.dumps(servers), '']

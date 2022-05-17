@@ -9,8 +9,6 @@ class Profiles(commands.Cog, name='osu_profiles'):
     
     @commands.command(name='mapper', help='Shows your mapping profile on osu!')
     async def mapper(self, ctx, username:str):
-        if not username:
-            await ctx.send("fucking idiot")
         try:
             info = osu.mapper(username)
             if info == 0:
