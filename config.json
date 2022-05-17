@@ -1,7 +1,5 @@
 {
-  "bot_admins": [
-    ""
-  ],
-  "daily_amount": 1000,
-  "daily_cooldown_hours": 24
+  "bot_admins": [],
+  "freebie_amount": 1000,
+  "freebie_cooldown_hours": 12
 }

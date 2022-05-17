@@ -34,7 +34,7 @@ class DBCheck(commands.Cog):
             print(f"Ran into an error: {str(e)}")
 
     
-    @tasks.loop(seconds=10, count=None)
+    @tasks.loop(seconds=60, count=None)
     async def dbcheck(self):
 
         """
@@ -42,7 +42,7 @@ class DBCheck(commands.Cog):
         it also ensures that the names are correct, and that the guild config is standardized (in the case that we change the amount of parameters in the config file).
         if any guild/member is not in database, fetch default database info from bot_vars and add necessary info (id, name, mutual servers, etc), then add it to the database.
         """
-
+        
         print('Performing database check ...')
         server_default_config = json.dumps(bot_vars.config)
 
@@ -74,7 +74,7 @@ class DBCheck(commands.Cog):
                 if not search:
                     userinfo = copy.copy(bot_vars.user_default)
                     userinfo[0] = member.name
-                    userinfo[1] = member.id
+                    userinfo[1] = str(member.id)
                     temp = json.loads(userinfo[3])
                     for x in member.mutual_guilds:
                         temp['servers'].append(x.id)

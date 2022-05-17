@@ -6,7 +6,8 @@ import sqlol.disql as sq
 
 def add(uid, amount):
     cur = sq.search_id(bot_vars.conn, bot_vars.main_table, 'uid', uid)[0][3]
-    sq.update_value(bot_vars.conn, bot_vars.main_table, uid, 'uid', 'money', cur+amount)
+    now = cur + amount
+    sq.update_value(bot_vars.conn, bot_vars.main_table, "uid", uid, "money", now)
     return 1
 
 def sub(uid, amount):
@@ -15,7 +16,8 @@ def sub(uid, amount):
         print(f"Tried to subtract ${amount} from user {uid} but only had {cur}.")
         return 0
     else:
-        sq.update_value(bot_vars.conn, bot_vars.main_table, uid, 'uid', 'money', cur-amount)
+        now = cur-amount
+        sq.update_value(bot_vars.conn, bot_vars.main_table, "uid", uid, "money", now)
         return 1
 
 def bal(uid):
