@@ -1,0 +1,9 @@
+{
+  "command_prefix": ";",
+  "bot_admins": [
+    "none",
+    530619329964933121
+  ],
+  "freebie_amount": 1000,
+  "freebie_cooldown_hours": 12
+}

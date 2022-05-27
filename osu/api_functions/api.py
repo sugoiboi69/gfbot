@@ -1,9 +1,12 @@
+from tabnanny import check
+from time import time
 from ossapi import *
 from dotenv import load_dotenv
 import os
 import datetime as dt
 import requests
 from dateutil import relativedelta as rdelta
+from bs4 import BeautifulSoup
 import json
 load_dotenv()
 
@@ -128,10 +131,53 @@ def bn_info(option: int): #gives info about open osu BNs using mappersguild API;
         'unknown':unknown
         }
         return info
-    
     else:
         return overall
 
-    
+
+
+def forum_queue_info():
+    changes_dict = {}
+    r = requests.get("https://osu.ppy.sh/community/forums/60")
+    soup = BeautifulSoup(r.content, 'html.parser')
+    forum = soup.select('.forum-list__items')[2] #selects forum posts in the html
+    latest_posts = forum.find_all('li', attrs={'class':'forum-topic-entry clickable-row js-forum-topic-entry t-forum-category-beatmaps'})[:10] #gets first 10 (since we're checking regularly, we don't need all 30 of them)
+    for post in latest_posts:
+        user_colour = post.find_all('span', attrs={'class': 'forum-topic-entry__user-icon'})[0].get("style") #non-users have colour
+        if 'background-color' in user_colour:
+            forum_id = post.get("data-topic-id")
+            forum_object = api.forum_topic(forum_id, sort='id_desc')
+            time_between_posts = forum_object.posts[0].created_at - forum_object.posts[1].created_at
+            user_title = api.user(forum_object.posts[0].user_id).title
+
+            if time_between_posts > dt.timedelta(days=2): #only return if it has been 2 days since the last post.
+                if user_title is None:
+                    changes_dict[forum_id] = [str(forum_object.topic.title),  time_between_posts, f"**{api.user(forum_object.posts[0].user_id).username}**: "+BeautifulSoup(forum_object.posts[0].body.html,features='lxml').get_text('\n').split('\n',1)[0]+"..."]
+                else:
+                    changes_dict[forum_id] = [str(forum_object.topic.title),  time_between_posts, f"**{api.user(forum_object.posts[0].user_id).username}** ***({user_title})***: "+BeautifulSoup(forum_object.posts[0].body.html,features='lxml').get_text('\n').split('\n',1)[0]+"..."]
+            
+    if changes_dict: return changes_dict
+    return None
+
+def gform_info(urls: list):
+    forms_dict = {}
+    for url in urls:
+        user_agent = {'Referer':url+'/viewform','User-Agent': "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.52 Safari/537.36"}
+        r = requests.get(url, headers=user_agent)
+        soup = BeautifulSoup(r.content, 'html.parser')
+        #
+        divs = soup.find_all('div')
+        i=0
+        for div in divs:
+            if div.has_attr('role'):
+                if div['role'] == 'heading':
+                    break
+            i+=1
+        title_header = f"{' '.join((divs[i+1].text.split(' '))[:10])}..." #only returning the header instead of title, but title will be in div[i] (if i need it)
+        inputs = len(soup.find_all("input"))
+        forms_dict[url] = {'title': title_header, 
+                            'inputs':inputs}
+
+    return forms_dict #returns dict like {gform: ['title of gform: header of gform', no. of inputs in form]}
 
 

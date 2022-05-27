@@ -3,18 +3,25 @@ import osu.api_functions.api as osu #for some reason, we need to import it like 
 import datetime as dt
 import discord
 
-class Profiles(commands.Cog, name='osu_profiles'):
+class Profiles(commands.Cog, name='Profiles', description = 'osu!'):
     def __init__(self, bot):
         self.bot = bot
     
-    @commands.command(name='mapper', help='Shows your mapping profile on osu!')
-    async def mapper(self, ctx, username:str):
-        if not username:
-            await ctx.send("fucking idiot")
+    @commands.command(name='mapper', 
+                    help="""**Shows your mapping profile on osu!** Takes the following arguments: 
+
+                    **username**: a valid osu! username.
+                    """)
+    async def mapper(self, ctx, username:str=None):
+        if username==None:
+            embed = discord.Embed(title="Please enter a valid osu! username.")
+            await ctx.send(embed=embed)
+            return
         try:
             info = osu.mapper(username)
             if info == 0:
-                await ctx.send(f"Player called {username} wasn't found or had no uploaded maps.")
+                embed=discord.Embed(title=f"Player called {username} wasn't found or had no uploaded maps.")
+                await ctx.send(embed=embed)
                 return
             
             total = info["mapsets_rpgl"][0]+info["mapsets_rpgl"][1]+info["mapsets_rpgl"][2]+info["mapsets_rpgl"][3]
