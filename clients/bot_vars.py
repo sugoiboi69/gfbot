@@ -11,6 +11,7 @@ class bot_vars():
 
     #default bot config file
     bot_config = {
+        "command_prefix": '',
         "bot_admins": [],
         "freebie_amount": 0,
         "freebie_cooldown_hours": 0,
@@ -34,6 +35,6 @@ class bot_vars():
 
     #user database entries and the default.
     servers = {"servers": []}
-    user_cols = ["user", "uid", "money", "servers", "last_freebie"]
-    user_cols_type = ["text", "text", "integer", "text", "text"]
-    user_default = ['', '', 0, json.dumps(servers), '']
+    user_cols = ["user", "uid", "money", "servers", "last_freebie", "active_game"]
+    user_cols_type = ["text", "text", "integer", "text", "text", "text"]
+    user_default = ['', '', 0, json.dumps(servers), '', '']

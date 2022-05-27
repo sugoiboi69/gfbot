@@ -8,15 +8,20 @@ import asyncio
 import json
 import math
 
-class Economy(commands.Cog):
+
+
+class Economy(commands.Cog, name='Money', description='Economy'):
     def __init__(self, bot):
         self.bot = bot
         self.conn = bot_vars.conn
         self.main_table = bot_vars.main_table
         self.server_table = bot_vars.server_table
 
-
-    @commands.command(name='balance')
+    @commands.command(name='balance',
+                    help = """**Check a user's bank balance.** Takes the following arguments:
+                    
+                    **user:** a Discord user to check; else, check your own balance.
+                    """)
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def balance(self, ctx: commands.Context, user: discord.Member = None):
         if user is None:
@@ -28,7 +33,12 @@ class Economy(commands.Cog):
             await ctx.send(f"{user.display_name} currently has ${amt}.")
     
 
-    @commands.command(name='send')
+    @commands.command(name='send',
+                    help = """**Send money to another person in the server.** Takes the following arguments:
+
+                    **recipient:** The person to send money to.
+                    **amount:** The amount to send.
+                    """)
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def send(self, ctx:commands.Context, recipient:discord.Member=None, amount:int=0):
         cur = money.bal(ctx.author.id)
@@ -61,7 +71,8 @@ class Economy(commands.Cog):
                     await ctx.send("Timed out.")
     
 
-    @commands.command(name='freebie')
+    @commands.command(name='freebie',
+                    help = "**Get free money!**")
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def freebie(self, ctx:commands.Context):
         last_freebie = sq.search_id(self.conn, self.main_table, "uid", ctx.author.id)[0][5]
@@ -87,7 +98,12 @@ class Economy(commands.Cog):
                     sq.update_value(self.conn, self.main_table, "uid", ctx.author.id, "last_freebie", datetime.datetime.now().strftime(f"%d/%m/%Y %H:%M:%S"))
 
     
-    @commands.command(name='request')
+    @commands.command(name='request',
+                    help = """**Request money from a person; a request must be accepted within 5 minutes.** Takes the following arguments: 
+
+                    **amount:** The amount of money to request.
+                    **user:** A Discord user to request from.
+                    """)
     @commands.cooldown(1, 300, commands.BucketType.user)
     async def request(self, ctx:commands.Context, amount: int=0, user: discord.Member=None):
         if int <= 0:
@@ -102,10 +118,4 @@ class Economy(commands.Cog):
         else:
             #have to write this out.
             pass
-
-
-        
-        
-    #@commands.command(name='daily')
-    #@commands.cooldown(1, 30, commands.BucketType.user) 
 

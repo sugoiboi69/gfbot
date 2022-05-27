@@ -55,11 +55,12 @@ def get_tables(conn):
     print(c.fetchall())
 
 def get_columns(conn, table):
+    columns = []
     c = conn.cursor()
     data = c.execute(f'''SELECT * FROM {table}''')
     for column in data.description:
-        print(column[0])
-
+        columns.append(column[0])
+    return columns
 
 
 def search_id(conn, table, col, val): #search for value "val" in column "col" in table "table"
